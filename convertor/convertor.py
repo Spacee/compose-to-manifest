@@ -305,15 +305,8 @@ def template_to_manifest(input: str, output: str):
     def fillCreateOptions(target: dict, options: dict):
         # current Edge runtime only support 4096B createOptions in 8 fields
         create_option_string = json.dumps(options)
-        block_size = 512
-        n = len(create_option_string)
-        limit = 512 * 8
-        if n > limit:
-            raise ValueError("createOptions too long, exceed {} bytes".format(limit))
-        for i in range(0, n, block_size):
-            suffix = "{:02}".format(i // block_size) if i else ""
-            target["createOptions" + suffix] = create_option_string[i:min(i + block_size, n)]
-
+        target["createOptions"] = create_option_string
+        
     with open(input, "r", encoding="utf8") as fp:
         j = json.load(fp)
         try:
